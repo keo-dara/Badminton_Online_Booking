@@ -56,19 +56,7 @@ export class CustomerService {
       system,
     });
 
-    let id: number;
-
-    const result = await this.createCustomerAsync(customer);
-
-    if (result) {
-      id = result.data.id;
-    }
-
-    const saveCustomer = await this.customerRepo.save(customer);
-    return {
-      ...saveCustomer,
-      exId: id,
-    };
+    return await this.customerRepo.save(customer);
   }
 
   async findAll(
@@ -136,30 +124,5 @@ export class CustomerService {
     return this.customerRepo.softDelete({
       id: founded.id,
     });
-  }
-
-  async createCustomerAsync(customer: {
-    name: string;
-    phone: string;
-  }): Promise<ICustomerResponse> {
-    try {
-      const res = await firstValueFrom(
-        this.httpService.post(
-          'https://admin.vsmashbadminton.online/api/customers',
-          customer,
-          {
-            headers: {
-              to: 'http://pos.vsmashbadminton.online',
-            },
-          },
-        ),
-      );
-      const data = res.data as ICustomerResponse;
-      return data;
-    } catch (error) {
-      this.logger.error('Error creating customer', error.response?.data);
-      this.logger.error('Error creating customer', error);
-      return null;
-    }
   }
 }

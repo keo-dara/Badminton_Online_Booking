@@ -328,24 +328,6 @@ export class BookingService {
       this.logger.log(`No notification sent for booking ID: ${booking.id}`);
     }
 
-    if (
-      booking.status === SaleStatus.Paid ||
-      booking.status === SaleStatus.PaidSome
-    ) {
-      let customerId: number;
-
-      const result = await this.customerService.createCustomerAsync({
-        name: booking.customer,
-        phone: booking.phone,
-      });
-
-      if (result) {
-        customerId = result.data.id;
-      }
-
-      booking.customerId = customerId;
-    }
-
     await this.bookingRepository.save(booking);
 
     const found = await this.findOne(id);
