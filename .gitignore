@@ -1,0 +1,10 @@
+/.DS_Store
+/.dockerignore
+.DS_Store
+admin/bun.lockb
+.cache
+alias
+versions
+node_modules
+.env
+.aider*

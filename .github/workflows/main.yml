@@ -1,0 +1,65 @@
+name: Run Tests & Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  container-job:
+    runs-on: ubuntu-latest
+    container: node:20-bullseye
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        working-directory: ./api
+        run: npm ci
+
+      - name: Test API
+        working-directory: ./api
+        run: npm test
+        env:
+          DATABASE_HOST: postgres
+          DATABASE_PORT: 5432
+          DATABASE_USER: postgres
+          DATABASE_PASSWORD: postgres
+          DATABASE_NAME: postgres
+
+      - name: Build API
+        working-directory: ./api
+        run: npm run build --if-present
+
+      - name: Make a Copy to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          source: api/dist/*
+          target: /home/dara/backup
+      - name: move to app folder and restart pm2
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          password: ${{ secrets.PASSWORD }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cp -r /home/dara/backup/api/dist/* /home/dara/app/dist/
+            pm2 restart 0

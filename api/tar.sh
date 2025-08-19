@@ -1,0 +1,1 @@
+tar -cvf deploy.tar --exclude='node_modules' --exclude='uploads' --exclude='docker-compose.dev.yml' --exclude='docker-compose.yml' --exclude='nest-cli.json'  *
