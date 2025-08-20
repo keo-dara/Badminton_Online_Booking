@@ -2,6 +2,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     apiUrl: process.env.API_URL,
   },
+  compatibilityDate: '2025-08-20',
   ssr: false,
   devtools: { enabled: true },
   srcDir: "src",
