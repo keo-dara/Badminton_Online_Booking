@@ -1,8 +1,5 @@
 export default defineNuxtConfig({
   compatibilityDate: '2025-08-20',
-  nitro: {
-    preset: "cloudflare-pages",
-  },
   runtimeConfig: {
     apiUrl: process.env.API_URL,
   },
