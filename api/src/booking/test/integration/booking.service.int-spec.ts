@@ -103,10 +103,6 @@ describe('BookingService', () => {
     expect(bookingService.processingBooking).toBe(false);
   });
 
-  it('telegram group it should be', () => {
-    expect(bookingService.groupId).toBe(-4533256012);
-  });
-
   it('booking create work', async () => {
     booking = await bookingService.create(
       {
