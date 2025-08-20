@@ -29,6 +29,7 @@ const appConfig = {
   merchantId: process.env.ABA_PAYWAY_MERCHANT_ID || '',
   abaApiUrl: process.env.ABA_PAYWAY_API_URL || '',
   isTestEnv: process.env.APP_ENV === 'testing',
+  telegramGroup: process.env.TELEGRAM_GROUP,
 };
 
 export default appConfig;

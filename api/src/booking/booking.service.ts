@@ -74,9 +74,7 @@ export class BookingService {
       payment = await this.khqrService.newTransaction(price, info);
       payment2 = await this.khqrService.newTransaction(price2, info);
     } else {
-      const info = this.khqrService.parseQrString(
-        '00020101021129220018leanghenghorm@aclb5204599953038405802KH5914Leangheng HORM6010Phnom Penh63049C77',
-      );
+      const info = this.khqrService.parseQrString('');
       payment = await this.khqrService.newTransaction(price, info);
       payment2 = await this.khqrService.newTransaction(price2, info);
     }
@@ -218,17 +216,7 @@ export class BookingService {
     }
 
     const now = Date.now();
-    const hashString =
-      now +
-      'vsmashbadmintonclub' +
-      booking.no +
-      booking.price +
-      '' +
-      '' +
-      '' +
-      '' +
-      'abapay_khqr' +
-      `https://www.vsmashbadminton.online/booking-detail/${booking.id}`;
+    const hashString = ``;
 
     booking.hashString = this.khqrService.getHash(hashString);
     booking.url = appConfig.abaApiUrl;
@@ -510,17 +498,15 @@ export class BookingService {
     });
   }
 
-  groupId = -4533256012;
-  groupId2 = -1002486818575;
-
   async sendMessageToGroup(message: string): Promise<boolean> {
     if (appConfig.isTestEnv) {
       return true;
     }
 
     try {
-      // await this.bot.telegram.sendMessage(this.groupId, message);
-      await this.bot.telegram.sendMessage(this.groupId2, message);
+      if (appConfig.telegramGroup) {
+        await this.bot.telegram.sendMessage(appConfig.telegramGroup, message);
+      }
 
       return true;
     } catch (error) {
