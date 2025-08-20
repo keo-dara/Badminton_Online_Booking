@@ -7,12 +7,15 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   srcDir: "src",
   css: ["~/assets/css/main.css"],
+  nitro: {
+    preset: "cloudflare-pages",
+  },
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
     "nuxt-icon",
     "@pinia/nuxt",
-    "dayjs-nuxt",    
+    "dayjs-nuxt",
     "nuxt-time",
   ],
   pinia: {
