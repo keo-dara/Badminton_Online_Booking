@@ -1,15 +1,15 @@
 export default defineNuxtConfig({
+  compatibilityDate: '2025-08-20',
+  nitro: {
+    preset: "cloudflare-pages",
+  },
   runtimeConfig: {
     apiUrl: process.env.API_URL,
   },
-  compatibilityDate: '2025-08-20',
   ssr: false,
   devtools: { enabled: true },
   srcDir: "src",
   css: ["~/assets/css/main.css"],
-  nitro: {
-    preset: "cloudflare-pages",
-  },
   modules: [
     "@nuxtjs/tailwindcss",
     "@nuxtjs/i18n",
