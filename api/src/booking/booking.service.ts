@@ -73,10 +73,6 @@ export class BookingService {
       const info = this.khqrService.parseQrString(user.shop.paymentString);
       payment = await this.khqrService.newTransaction(price, info);
       payment2 = await this.khqrService.newTransaction(price2, info);
-    } else {
-      const info = this.khqrService.parseQrString('');
-      payment = await this.khqrService.newTransaction(price, info);
-      payment2 = await this.khqrService.newTransaction(price2, info);
     }
 
     if (gTimes[0] === null) {
@@ -413,7 +409,7 @@ export class BookingService {
     );
 
     this.logger.log('Result from ABA');
-    // this.logger.log(payments);
+    this.logger.log(payments);
 
     const successId: {
       id: number;
@@ -531,7 +527,6 @@ export class BookingService {
     💳 Payment Status: ${this.makeStatusMessage(booking)}
     🕒 ${booking.createdAt.toDateString()}
 
-    🖥 Manage order in Portal: https://admin.vsmashbadminton.online
       `;
   }
 

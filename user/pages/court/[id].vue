@@ -82,19 +82,6 @@ import dayjs from 'dayjs';
 import type { Availability } from '~/models/availability';
 import { useCourtStore } from '~/store/court';
 
-
-useHead({
-  script: [
-    {
-      src: "https://checkout.payway.com.kh/plugins/checkout2-0.js",
-      type: "text/javascript",
-      defer: true,
-    },
-  ],
-});
-
-
-
 const router = useRouter();
 const route = useRoute();
 const courtStore = useCourtStore();
