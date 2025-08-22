@@ -69,6 +69,8 @@ export class BookingService {
     const price = (createBookingDto.bookPercent * total) / 100;
     const price2 = total - price;
 
+    this.logger.log('Payment String', user?.shop?.paymentString);
+
     if (user?.shop?.paymentString) {
       const info = this.khqrService.parseQrString(user.shop.paymentString);
       payment = await this.khqrService.newTransaction(price, info);
