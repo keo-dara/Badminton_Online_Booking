@@ -174,6 +174,8 @@ export class KhqrService {
       ];
     }
 
+    return [];
+
     try {
       const { data } = await firstValueFrom(
         this.httpService
