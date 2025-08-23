@@ -370,9 +370,10 @@ export class BookingService {
   }
 
   processingOrder: boolean = false;
-
   @Cron('*/1 * * * * *')
   async clearBookingLast() {
+    this.logger.log(`clearBookingLast STATE: ${this.processingOrder}`);
+
     if (this.processingOrder) {
       return [];
     }
@@ -382,12 +383,11 @@ export class BookingService {
     const lastBookings: {
       id: number;
       md5: string;
-      no: string;
       total: number;
       price: number;
     }[] = await this.bookingRepository.query(
       `
-        SELECT s.id, kq.md5, s.price, s.total, s.no
+        SELECT s.id, kq.md5, s.price, s.total
         FROM "booking" s
         LEFT JOIN kh_qr kq ON s."paymentId" = kq.id
         WHERE s."updatedAt" >= NOW() - INTERVAL '5 minutes'
@@ -396,22 +396,18 @@ export class BookingService {
       `,
     );
 
-    // this.logger.log(lastBookings);
+    this.logger.log(lastBookings);
     if (lastBookings.length === 0) {
       this.processingOrder = false;
       return [];
     }
 
-    const md5list = lastBookings.map(({ no }) => no);
+    const md5list = lastBookings.map(({ md5 }) => md5);
 
-    const payments = await Promise.all(
-      md5list.map(async (no) => {
-        return this.khqrService.checkTransactionAba(no);
-      }),
+    const payments = await this.khqrService.checkTransactionMd5List(
+      md5list,
+      'checkBookingLast',
     );
-
-    this.logger.log('Result from ABA');
-    this.logger.log(payments);
 
     const successId: {
       id: number;
@@ -421,11 +417,10 @@ export class BookingService {
 
     if (payments) {
       payments.forEach((item) => {
-        this.logger.log(item);
-        if (item && item.payment_status === 'APPROVED') {
+        if (item?.data) {
           const filteredResult = appConfig.isTestEnv
             ? lastBookings
-            : lastBookings.filter((info) => info.no === item.no);
+            : lastBookings.filter((info) => info.md5 === item.md5);
 
           const { id, price, total } = filteredResult[0];
           successId.push({
@@ -436,9 +431,6 @@ export class BookingService {
         }
       });
     }
-
-    this.logger.log('SHOULD UPDATE');
-    this.logger.log(successId);
     const items: Booking[] = [];
 
     await Promise.all(
